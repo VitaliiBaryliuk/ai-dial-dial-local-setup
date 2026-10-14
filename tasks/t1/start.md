@@ -1,18 +1,67 @@
-# Start DIAL Chat with Themes and Core
-
-1. Open the `docker-compose.yml` in the project root
-2. Run it with:
-    ```bash
-    docker compose up -d
-    ```
-3. Check that they are up 
-    ```bash
-    docker compose ps -a
-    ```
-    **For MAC users please uncomment in config for each service the `platform: linux/amd64`**
-4. Open in browser [local dial chat](http://localhost:3000/marketplace) and check that it works. There will be no models
-and applications, it is okay, we will create them with next task.
-<img src="_screenshots/marketplace.png">
-<img src="_screenshots/chat.png">
-`Not available agent selected. Please, change the agent to proceed` it is okay, since we didn't add any models or applications into `config.json`
-5. When you run `docker compose` you will probably find that the 2 new folders were created (`core-data`, `core-logs`). It is okay, there will persist logs from Core and local Bucket to persist conversations and files
+{
+  "routes": {},
+  "applications": {
+    "echo": {
+      "displayName": "My Echo App",
+      "description": "Simple application that repeats user's message",
+      "endpoint": "http://host.docker.internal:5022/openai/deployments/echo/chat/completions"
+    },
+    "essay-assistant": {
+      "displayName": "Essay Assistant",
+      "description": "Essay Assistant. Always answers with essay.",
+      "endpoint": "http://host.docker.internal:5025/openai/deployments/essay-assistant/chat/completions"
+    }
+  },
+  "models": {
+    "gpt-4o": {
+      "displayName": "GPT 4o",
+      "endpoint": "http://adapter-dial:5000/openai/deployments/gpt-4o/chat/completions",
+      "iconUrl": "http://localhost:3001/gpt4.svg",
+      "type": "chat",
+      "upstreams": [
+        {
+          "endpoint": "https://ai-proxy.lab.epam.com/openai/deployments/gpt-4o/chat/completions",
+          "key": "{REPLACE_WITH_YOUR_API_KEY}"
+        }
+      ]
+    },
+    "claude-3-7-sonnet@20250219": {
+      "displayName": "sonnet 3.7",
+      "endpoint": "http://adapter-dial:5000/openai/deployments/claude-3-7-sonnet@20250219/chat/completions",
+      "type": "chat",
+      "upstreams": [
+        {
+          "endpoint": "https://ai-proxy.lab.epam.com/openai/deployments/claude-3-7-sonnet@20250219/chat/completions",
+          "key": "{REPLACE_WITH_YOUR_API_KEY}"
+        }
+      ]
+    },
+    "gemini-2.5-pro-preview-03-25": {
+      "displayName": "Gemini 2.5 Pro",
+      "endpoint": "http://adapter-dial:5000/openai/deployments/gemini-2.5-pro-preview-03-25/chat/completions",
+      "iconUrl": "http://localhost:3001/Gemini-Pro-Vision.svg",
+      "type": "chat",
+      "upstreams": [
+        {
+          "endpoint": "https://ai-proxy.lab.epam.com/openai/deployments/gemini-2.5-pro-preview-03-25/chat/completions",
+          "key": "{REPLACE_WITH_YOUR_API_KEY}"
+        }
+      ]
+    }
+  },
+  "keys": {
+    "dial_api_key": {
+      "project": "TEST-PROJECT",
+      "role": "default"
+    }
+  },
+  "roles": {
+    "default": {
+      "limits": {
+        "gpt-4o": {
+          "minute": "100"
+        }
+      }
+    }
+  }
+}
